@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Expires" content="0">
+	<meta http-equiv="Last-Modified" content="0">
+	<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Scripts -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/menu.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/index.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/common.css" media="screen" />
+
+	<script src="js/jquery-3.6.0.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="js/constants.js"></script>
+	<script type="text/javascript" src="js/commonFunctions.js"></script>
+	<script type="text/javascript" src="js/formFunctions.js"></script>
+	<script type="text/javascript" src="js/validations.js"></script>
+	<script type="text/javascript" src="js/lang.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/processManagement.js"></script>
+	<script type="text/javascript" src="js/pagination.js"></script>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="Locale/Lang_EN.js"></script>
+	<script type="text/javascript" src="Locale/Lang_ES.js"></script>
+	<script type="text/javascript" src="Locale/Lang_GA.js"></script>
+</head>
+
+<body onload="
+(async ()=>{
+    await userRole();
+	checkPermissions();
+	loadLang(); 
+	includeFooter();
+	includeBreadCrumb('processManagement');
+    await loadProcessData();
+	await loadCategoryData();
+	await loadUserData();
+	await userNotifications();
+	addButton();
+	setLang('');
+})();">
+	<!--MENU-->
+	<div id="topMenu"></div>
+
+	<!--BREADCRUMB-->
+	<nav id="breadcrumb" aria-label="breadcrumb"></nav>
+
+	<!--TITULO-->
+	<h1 class="gestion bg-dark GESTION_PROCESO"></h1>
+
+	<div id="tablaDatos" class="mt-3">
+		<!--BOTON AÑADIR-->
+		<div id="btnAdd"></div>
+
+		<!--TABLA-->
+		<div>
+			<table class="table table-bordered text-center" id="tablaProcesos">
+				<thead class="headerGestionProcesos">
+					<!--ID-->
+					<th scope="col">
+						<div class="idProcesoColumn ID"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(0, 'tablaProcesos')" class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+					</th>
+					<!--VERSION-->
+					<th scope="col">
+						<div class="versionProcesoColumn VERSION"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(1, 'tablaProcesos')" class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bversion" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--NOMBRE-->
+					<th scope="col">
+						<div class="nombreProcesoColumn NOMBRE"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(2, 'tablaProcesos')" class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bnombre" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--FECHA CREACION-->
+					<th scope="col">
+						<div class="fechaCreacionProcesoColumn FECHA_CREACION"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(3, 'tablaProcesos')" class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bfechacreacion" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--CATEGORIA-->
+					<th scope="col">
+						<div class="categoriaProcesoColumn CATEGORIA"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(4, 'tablaProcesos')" class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bcategoria" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--MODIFICADOR-->
+					<th scope="col">
+						<div class="creadorProcesoColumn MODIFICADOR"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(5, 'tablaProcesos')" class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bmodificador" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--ACTIVO-->
+					<th scope="col">
+						<div class="creadorProcesoColumn ACTIVO"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(5, 'tablaProcesos')" class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bactivo" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--ACCIONES-->
+					<th scope="col" class="ACCIONES">
+						<div class="ACCIONES"></div>
+					</th>
+				</thead>
+				<tbody id="datosEntidades" class="bodyGestionProceso">
+			</table>
+
+			<div class="filasTabla">
+				<div id="contadorPaginas"></div>
+			</div>
+
+			<div class="paginacion" id="paginacion">
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL AÑADIR PROCESO-->
+	<div class="modal modal2 fade" id="registro-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog modal-lg">
+			<div class="registromodal-container">
+				<h1 class="ANADIR_PROCESO mt-3"></h1>
+				<form name="formularioProceso" id="formularioProceso" action="javascript:addProcess()"
+					onsubmit="return checkAddProcess()">
+					<div class="tab-content">
+						<div id="datosProceso" class="p-3 tab-pane active overflow-auto">
+							<!--NOMBRE-->
+							<div class="form-group col-12">
+								<label class="PROCESO_NOMBRE"></label>
+								<div class="obligatorio tooltip2" id="obligatorioNombre">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO">Campo
+										obligatorio</span>
+								</div>
+								<input type="text" name="nombre" id="nombreP" placeholder="Nombre"
+									class="PROCESO_NOMBRE form-control" maxlength="45" size="45"
+									onblur="return checkName('nombreP', 'errorFormatNameProcess', 'nameProcessRegister')">
+								<div style="display:none" id="errorFormatNameProcess"></div>
+							</div>
+
+							<!--DESCRIPCION-->
+							<div class="form-group col-12">
+								<label class="PROCESO_DESCRIPCION"></label>
+								<div class="obligatorio tooltip2" id="obligatorioDescripcion">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO">Campo
+										obligatorio</span>
+								</div>
+								<textarea type="text" name="descripcion" id='descripcionP' maxlength="500" rows="6"
+									placeholder="..." class="form-control"
+									onblur="return checkDescription('descripcionP', 'errorFormatDescripcionP', 'descriptionProcessRegister');"></textarea>
+								<div style="display:none" id="errorFormatDescripcionP"></div>
+							</div>
+
+							<!--CATEGORIA-->
+							<div class="form-group col-12">
+								<label class="PROCESO_CATEGORIA"></label>
+								<div class="obligatorio tooltip2" id="obligatorioCategoria">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO">Campo
+										obligatorio</span>
+								</div>
+								<div class="obligatorio tooltip2" id="obligatorioCategoria" style="display:none">*
+									<span class="tooltiptext2 CAMPO_OBLIGATORIO"></span>
+								</div>
+								<select name='id_categoria' id='categoriaP' class="form-control"></select>
+								<div id="errorFormatoProcesoCategoria" style="display:none"></div>
+							</div>
+
+							<!--CREADOR-->
+							<input type="hidden" name="dni_usuario_creacion" id='creadorP' placeholder="Creador"
+								class="PROCESO_CREADOR form-control">
+						</div>
+					</div>
+
+					<div class="col-12">
+						<button type="submit" name="btnRegistrar" value="Registrar"
+							class="btnRegistrar tooltip3 border border-secondary mb-3">
+							<img class="iconoRegistrar iconRegistrar" src="Resources/registrar3.png" alt="Registrar" />
+							<span class="tooltiptext3 ANADIR_PROCESO"></span>
+						</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL ACCIONES-->
+	<div class="modal fade" id="formularioAcciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog modal-lg" id="contenidoForm">
+			<div class="formularioAcciones-container">
+				<h1 class="TITULO_MODAL mt-3"></h1>
+				<form name="formularioGenerico" id="formularioGenerico" action="" onsubmit="">
+					<div id="datosPersonales" class="p-3 tab-pane active overflow-auto">
+						<div class="row">
+							<!--ID-->
+							<div class="form-group col-2">
+								<label class="PROCESO_ID" id="label_proceso_id" style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_id" style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" disabled maxlength="48" placeholder="" name="id_proceso_visible"
+									id="input_id_proceso_visible" style="display:none"
+									class="PROCESO_ID id form-control" onblur="" />
+								<!--ID OCULTO-->
+								<input type="hidden" name="id_proceso" id="input_id_proceso" />
+								<div id="errorFormatoId" style="display:none"></div>
+							</div>
+							<!--VERSION-->
+							<div class="form-group col-2">
+								<label class="PROCESO_VERSION" id="label_proceso_version" style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_version" style="display:none">
+									*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" maxlength="48" placeholder="" name="version"
+									id="input_version_proceso" style="display:none" class="PROCESO_VERSION form-control"
+									onblur="" />
+								<div id="errorFormatoVersion" style="display:none"></div>
+							</div>
+							<!--NOMBRE-->
+							<div class="form-group col-8">
+								<label class="PROCESO_NOMBRE" id="label_proceso_nombre" style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_nombre" style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" maxlength="48" placeholder="" name="nombre" id="input_nombre_proceso"
+									style="display:none" class="PROCESO_NOMBRE form-control" onblur="" />
+								<div id="errorFormatoNombre" style="display:none"></div>
+							</div>
+						</div>
+						<!--DESCRIPCION-->
+						<div class="form-group col-12">
+							<label class="PROCESO_DESCRIPCION" id="label_proceso_descripcion"
+								style="display:none"></label>
+							<div class="obligatorio tooltip2" id="obligatorio_proceso_descripcion" style="display:none">
+								*
+								<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+							</div>
+							<textarea maxlength="1048" placeholder="" name="descripcion" id="input_descripcion_proceso"
+								rows="6" style="display:none" class="PROCESO_DESCRIPCION form-control"
+								onblur=""></textarea>
+							<div id="errorFormatoDescripcion" style="display:none"></div>
+						</div>
+						<!--FORMULA-->
+						<div class="form-group col-12">
+							<div class="mb-2">
+								<label class="PROCESO_FORMULA d-inline" id="label_proceso_formula"
+									style="display:none"></label>
+								<!--BOTON NUEVA VERSION-->
+								<div id="btnCreateNewVersion" style="display:none" class="tooltip6 btn btn-dark mb-1">
+									<img class="" src="Resources/newVersion.png" alt="" id="iconoNuevaVersion"
+										style="transform: scaleX(-1); width: 20px" /></span>
+									<span class="tooltiptext NUEVA_VERSION" id="spanNuevaVersion"></span>
+								</div>
+							</div>
+
+							<div class="obligatorio tooltip2" id="obligatorio_proceso_formula" style="display:none">*
+								<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+							</div>
+							<!--BOTONERA-->
+							<div id="botoneraBoxEdit"
+								class="border border-dark rounded p-1 mb-1 botoneraBox col-8 mx-auto">
+								<div id="botoneraEdit" class="d-flex justify-content-between">
+									<select type="text" class="col-3 form-control" id="idParametroE"
+										onclick="checkBotoneraFormula('edit')" onblur="checkBotoneraFormula('edit')"
+										onkeyup="checkBotoneraFormula('edit')"></select>
+									<input type="number" class="col-3 form-control VALOR" id="idValorE"
+										onclick="checkBotoneraFormula('edit')" onblur="checkBotoneraFormula('edit')"
+										onkeyup="checkBotoneraFormula('edit')">
+									<select type="text" class="col-3 form-control" id="idOperadorE"
+										onclick="checkBotoneraFormula('edit')" onblur="checkBotoneraFormula('edit')">
+										<option class="OPERADOR"></option>
+										<option value="+">+</option>
+										<option value="-">-</option>
+										<option value="*">*</option>
+										<option value="/">/</option>
+										<option value=",">,</option>
+										<option value=".">.</option>
+										<option value="(">(</option>
+										<option value=")">)</option>
+										<option value="'">'</option>
+										<option value='"'>"</option>
+										<option value="%">%</option>
+										<option value="{">{</option>
+										<option value="}">}</option>
+										<option value="[">[</option>
+										<option value="]">]</option>
+										<option value="=">=</option>
+									</select>
+									<span class="btn btn-dark" class="col-3 form-control" id="idBotonBotonera"
+										onclick="addToFormula('edit')">+</span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12 pl-0">
+									<textarea maxlength="1048" placeholder="" name="formula" id="input_formula_proceso"
+										style="display:none" class="PROCESO_FORMULA form-control" onblur="" rows="10"
+										onclick="alertaVersion()" onkeypress="if(event.which != 8) return false;"></textarea>
+									<div id="errorFormatoFormula" style="display:none"></div>
+								</div>
+							</div>
+
+						</div>
+						<div class="row">
+							<!--FECHA CREACION-->
+							<div class="form-group col-md-3 col-sm-12">
+								<label class="PROCESO_FECHA_CREACION" id="label_proceso_fecha_creacion"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_fecha_creacion"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="date" min="1900-01-01" max="3000-01-01" placeholder=""
+									name="fecha_creacion" id="input_fecha_creacion_proceso" style="display:none"
+									class="PROCESO_FECHA_CREACION form-control" onblur="" />
+								<div id="errorFormatoFechaCreacion" style="display:none"></div>
+							</div>
+
+							<!--CREADOR-->
+							<div class="form-group col-md-6 col-sm-12">
+								<label class="PROCESO_CREADOR" id="label_proceso_creador" style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_creador" style="display:none">
+									*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" disabled maxlength="48" placeholder=""
+									name="dni_usuario_creacion_visible" id="input_creador_proceso_visible"
+									style="display:none" class="PROCESO_CREADOR form-control" onblur="" />
+								<!--CREADOR OCULTO-->
+								<input type="hidden" name="dni_usuario_creacion" id="input_creador_proceso" />
+								<div id="errorFormatoCreador" style="display:none"></div>
+							</div>
+
+							<!--ACTIVO-->
+							<div class="form-group col-md-3 col-sm-12">
+								<label class="PROCESO_ACTIVO" id="label_proceso_activo" style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_activo" style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<select name='activo' id='input_activo_proceso' class="form-control"
+									style="display:none">
+									<option value="1">Si</option>
+									<option value="0">No</option>
+								</select>
+								<div id="errorFormatoActivo" style="display:none"></div>
+							</div>
+						</div>
+						<div class="row">
+							<!--FECHA MODIFICACION-->
+							<div class="form-group col-md-3 col-sm-12">
+								<label class="PROCESO_FECHA_MODIFICACION" id="label_proceso_fecha_modificacion"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_fecha_modificacion"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="date" min="1900-01-01" max="3000-01-01" placeholder=""
+									name="fecha_modificacion" id="input_fecha_modificacion_proceso" style="display:none"
+									class="PROCESO_FECHA_MODIFICACION form-control" onblur="" />
+								<div id="errorFormatoFechaModificacion" style="display:none"></div>
+							</div>
+
+							<!--MODIFICADOR-->
+							<div class="form-group col-md-6 col-sm-12">
+								<label class="PROCESO_MODIFICADOR" id="label_proceso_modificador"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_modificador"
+									style="display:none">
+									*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<select name='dni_usuario_modificacion' id='input_modificador_proceso'
+									class="form-control" style="display:none"></select>
+								<div id="errorFormatoModificador" style="display:none"></div>
+							</div>
+
+							<!--CATEGORIA-->
+							<div class="form-group col-md-3 col-sm-12">
+								<label class="PROCESO_CATEGORIA" id="label_proceso_categoria"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_proceso_categoria"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<select name='id_categoria' id='input_categoria_proceso' class="form-control"
+									style="display:none"></select>
+								<div id="errorFormatoCategoria" style="display:none"></div>
+							</div>
+						</div>
+					</div>
+
+					<!--BOTON ACCION-->
+					<div class="row">
+						<div class="col-12">
+							<button type="submit" name="btnAcciones" value="" class="tooltip6 border border-dark mb-3"
+								id="btnAcciones">
+								<img class="" src="" alt="" id="iconoAcciones" />
+								<span class="tooltiptext" id="spanAcciones"></span>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- MODAL DELETE -->
+	<div class="modal fade" id="myModalDel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title ELIMINAR_PROCESO" id="myModalLabel"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p class="CONFIRMAR_ELIMINAR"></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary ICONO_CERRAR" data-dismiss="modal"></button>
+					<button type="button" id="btnDelete" class="btn btn-primary ELIMINAR_PROCESO"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL VER PERFIL-->
+	<div class="modal modal3 fade" id="viewProfile-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog"></div>
+	</div>
+
+	<!--MODAL CAMBIO CONTRASEÑA-->
+	<div class="modal modal3 fade" id="changePass-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+	</div>
+
+	<!--MODAL ALERTAS-->
+	<div id="modal" tabindex="-1" role="dialog" style="display:none">
+		<div class="modal-dialog" role="document" id="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<img src="" name="aviso" class="imagenAviso" />
+					<h3 id="modal-title" class="modal-title"></h3>
+				</div>
+				<div id='modal-mensaje' class="modal-body"></div>
+				<div class="modal-footer">
+					<a id="close" href="#" onclick="closeModal('modal'); loadProcessData();" class="tooltip5">
+						<img class="closeIcon" alt="Cerrar" src="Resources/close.png" />
+						<span class="tooltiptext5 ICONO_CERRAR"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+
+	<div id="footer"></div>
+</body>

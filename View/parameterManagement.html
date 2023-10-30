@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Expires" content="0">
+	<meta http-equiv="Last-Modified" content="0">
+	<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Scripts -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/menu.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/index.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/common.css" media="screen" />
+
+	<script src="js/jquery-3.6.0.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="js/constants.js"></script>
+	<script type="text/javascript" src="js/commonFunctions.js"></script>
+	<script type="text/javascript" src="js/formFunctions.js"></script>
+	<script type="text/javascript" src="js/validations.js"></script>
+	<script type="text/javascript" src="js/lang.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/parameterManagement.js"></script>
+	<script type="text/javascript" src="js/pagination.js"></script>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="Locale/Lang_EN.js"></script>
+	<script type="text/javascript" src="Locale/Lang_ES.js"></script>
+	<script type="text/javascript" src="Locale/Lang_GA.js"></script>
+</head>
+
+<body onload="
+(async ()=>{
+    await userRole();
+	checkPermissions();
+	loadLang(); 
+	includeFooter();
+	includeBreadCrumb('parameterManagement');
+    await loadParameterData();
+	await loadUserData();
+	await loadProcessData();
+	await userNotifications();
+	addButton();
+    /*fillCreator();*/
+	setLang('');
+})();">
+	<!--MENU-->
+	<div id="topMenu"></div>
+
+	<!--BREADCRUMB-->
+	<nav id="breadcrumb" aria-label="breadcrumb"></nav>
+
+	<!--TITULO-->
+	<h1 class="gestion bg-dark GESTION_PARAMETRO"></h1>
+
+	<!--TABLA-->
+	<div id="tablaDatos" class="mt-3">
+		<!--BOTON AÑADIR-->
+		<div id="btnAdd"></div>
+
+		<!--TABLA-->
+		<div>
+			<table class="table table-bordered text-center" id="tablaParametros">
+				<thead class="headerGestionParametros">
+					<!--ID-->
+					<th scope="col">
+						<div class="idParametroColumn ID"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(0, 'tablaParametros')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+					</th>
+					<!--NOMBRE-->
+					<th scope="col">
+						<div class="nombreParametroColumn NOMBRE"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(1, 'tablaParametros')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bnombre" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--CREADOR-->
+					<th scope="col">
+						<div class="creadorParametroColumn CREADOR"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(2, 'tablaParametros')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bcreador" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--MODIFICADOR-->
+					<th scope="col">
+						<div class="modificadorParametroColumn MODIFICADOR"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(3, 'tablaParametros')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bmodificador" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--PROCESO-->
+					<th scope="col">
+						<div class="procesoParametroColumn PROCESO"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(4, 'tablaParametros')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bproceso" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--VERSION-->
+					<th scope="col">
+						<div class="versionParametroColumn VERSION"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(5, 'tablaParametros')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bversion" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--ACCIONES-->
+					<th scope="col" class="ACCIONES">
+						<div class="ACCIONES"></div>
+					</th>
+				</thead>
+				<tbody id="datosEntidades" class="bodyGestionParametros">
+			</table>
+
+			<div class="filasTabla">
+				<div id="contadorPaginas"></div>
+			</div>
+
+			<div class="paginacion" id="paginacion">
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL AÑADIR PARAMETRO-->
+	<div class="modal modal2 fade" id="registro-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog modal-lg">
+			<div class="registromodal-container">
+				<h1 class="ANADIR_PARAMETRO mt-3"></h1>
+				<form name="formularioParametro" id="formularioParametro" action="javascript:addParameter()"
+					onsubmit="return checkAddParameter()">
+					<div class="tab-content">
+						<div id="datosParametro" class="p-3 tab-pane active overflow-auto">
+							<!--NOMBRE-->
+							<div class="form-group col-12">
+								<label class="PARAMETRO_NOMBRE"></label>
+								<div class="obligatorio tooltip2" id="obligatorioNombre">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO">Campo
+										obligatorio</span>
+								</div>
+								<input type="text" name="nombre" id="nombreP" placeholder="Nombre"
+									class="PARAMETRO_NOMBRE form-control" maxlength="45" size="45"
+									onblur="return checkName('nombreP', 'errorFormatNameParameter', 'nameParameterRegister')">
+								<div style="display:none" id="errorFormatNameParameter"></div>
+							</div>
+
+							<!--DESCRIPCION-->
+							<div class="row">
+								<div class="form-group col-12">
+									<label class="PARAMETRO_DESCRIPCION"></label>
+									<div class="obligatorio tooltip2" id="obligatorioDescripcion">*
+										<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO">Campo
+											obligatorio</span>
+									</div>
+									<textarea type="text" name="descripcion" id='descripcionP' maxlength="500" rows="6"
+										placeholder="..." class="form-control"
+										onblur="return checkDescriptionParameter('descripcionP', 'errorFormatDescripcionP', 'descriptionParameterRegister');"></textarea>
+									<div style="display:none" id="errorFormatDescripcionP"></div>
+								</div>
+							</div>
+
+							<!--UNIDAD-->
+							<div class="row">
+								<div class="form-group col-md-4 col-sm-12">
+									<label class="PARAMETRO_UNIDAD"></label>
+									<div class="obligatorio tooltip2" id="obligatorioUnidad">*
+										<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO">Campo
+											obligatorio</span>
+									</div>
+									<input type="text" name="unidad" id="unidadP" placeholder="Unidad"
+										class="PARAMETRO_UNIDAD form-control" maxlength="45" size="45"
+										onblur="return checkUnit('unidadP', 'errorFormatUnitParameter', 'unitParameterRegister')">
+									<div style="display:none" id="errorFormatUnitParameter"></div>
+								</div>
+								<!--PROCESO-->
+								<div class="form-group col-md-4 col-sm-12">
+									<label class="PARAMETRO_PROCESO"></label>
+									<div class="obligatorio tooltip2" id="obligatorioProceso">*
+										<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO">Campo
+											obligatorio</span>
+									</div>
+									<div class="obligatorio tooltip2" id="obligatorioProceso" style="display:none">*
+										<span class="tooltiptext2 CAMPO_OBLIGATORIO"></span>
+									</div>
+									<select name='id_proceso' id='select_id_proceso' class="form-control"
+										onchange="updateVersionSelect(this)"></select>
+									<div id="errorFormatoProcessParameter" style="display:none"></div>
+								</div>
+								<!--VERSION-->
+								<div class="form-group col-md-4 col-sm-12">
+									<label class="PARAMETRO_VERSION"></label>
+									<div class="obligatorio tooltip2" id="obligatorioVersion">*
+										<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO">Campo
+											obligatorio</span>
+									</div>
+									<div class="obligatorio tooltip2" id="obligatorioVersion" style="display:none">*
+										<span class="tooltiptext2 CAMPO_OBLIGATORIO"></span>
+									</div>
+									<select name='version' id='select_version' class="form-control"></select>
+									<div id="errorFormatoVersionParameter" style="display:none"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12">
+						<button type="submit" name="btnRegistrar" value="Registrar"
+							class="btnRegistrar tooltip3 border border-secondary mb-3">
+							<img class="iconoRegistrar iconRegistrar" src="Resources/registrar3.png" alt="Registrar" />
+							<span class="tooltiptext3 ANADIR_PROCESO"></span>
+						</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL ACCIONES-->
+	<div class="modal fade" id="formularioAcciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog modal-lg" id="contenidoForm">
+			<div class="formularioAcciones-container pb-3">
+				<h1 class="TITULO_MODAL mt-3"></h1>
+				<form name="formularioGenerico" id="formularioGenerico" action="" onsubmit="">
+					<div id="datosPersonales" class="m-3 tab-pane active overflow-auto">
+						<div class="row">
+							<!--ID-->
+							<div class="form-group col-md-3 col-sm-12">
+								<label class="PARAMETRO_ID" id="label_parametro_id" style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_parametro_id" style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" disabled maxlength="48" placeholder="" name="id_parametro_visible"
+									id="input_id_parametro_visible" style="display:none"
+									class="PARAMETRO_ID id form-control" onblur="" />
+								<!--ID OCULTO-->
+								<input type="hidden" name="id_parametro" id="input_id_parametro" />
+								<div id="errorFormatoId" style="display:none"></div>
+							</div>
+							<!--NOMBRE-->
+							<div class="form-group col-md-6 col-sm-12">
+								<label class="PARAMETRO_NOMBRE" id="label_parametro_nombre"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_parametro_nombre"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" maxlength="48" placeholder="" name="nombre"
+									id="input_nombre_parametro" style="display:none"
+									class="PARAMETRO_NOMBRE form-control" onblur="" onclick="alertaName()" />
+								<div id="errorFormatoNombre" style="display:none"></div>
+							</div>
+							<!--UNIDAD-->
+							<div class="form-group col-md-3 col-sm-12">
+								<label class="PARAMETRO_UNIDAD" id="label_parametro_unidad"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_parametro_unidad"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" maxlength="48" placeholder="" name="unidad"
+									id="input_unidad_parametro" style="display:none" class="form-control" onblur="" />
+								<div id="errorFormatoUnidad" style="display:none"></div>
+							</div>
+						</div>
+						<!--DESCRIPCION-->
+						<div class="row">
+							<div class="form-group col-12">
+								<label class="PARAMETRO_DESCRIPCION" id="label_parametro_descripcion"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_parametro_descripcion"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<textarea maxlength="1048" placeholder="" name="descripcion"
+									id="input_descripcion_parametro" style="display:none" rows="6"
+									class="PARAMETRO_DESCRIPCION form-control" onblur=""></textarea>
+								<div id="errorFormatoDescripcion" style="display:none"></div>
+							</div>
+						</div>
+
+						<!--CREADOR-->
+						<div class="row">
+							<div class="form-group col-md-6 col-sm-12">
+								<label class="PARAMETRO_CREADOR" id="label_parametro_creador"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_parametro_creador"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" disabled maxlength="48" placeholder=""
+									name="dni_usuario_creacion_visible" id="input_creador_parametro_visible"
+									style="display:none" class="PARAMETRO_CREADOR form-control" onblur="" />
+								<!--CREADOR OCULTO-->
+								<input type="hidden" name="dni_usuario_creacion" id="input_creador_parametro" />
+								<div id="errorFormatoCreador" style="display:none"></div>
+							</div>
+							<!--MODIFICADOR-->
+							<div class="form-group col-md-6 col-sm-12">
+								<label class="PARAMETRO_MODIFICADOR" id="label_parametro_modificador"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_parametro_modificador"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<select name='dni_usuario_modificacion' id='input_modificador_parametro'
+									class="form-control" style="display:none"></select>
+								<div id="errorFormatoModificador" style="display:none"></div>
+							</div>
+						</div>
+
+						<div class="row">
+							<!--PROCESO-->
+							<div class="form-group col-md-9 col-sm-12">
+								<label class="PARAMETRO_PROCESO" id="label_parametro_proceso"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_parametro_proceso"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" disabled maxlength="48" placeholder=""
+									id="input_proceso_parametro_visible" style="display:none"
+									class="PARAMETRO_PROCESO form-control" onblur="" />
+								<!--PROCESO OCULTO-->
+								<input type="hidden" name="id_proceso" id="input_proceso_parametro" />
+								<div id="errorFormatoProceso" style="display:none"></div>
+							</div>
+							<!--VERSION-->
+							<div class="form-group col-md-3 col-sm-12">
+								<label class="PARAMETRO_VERSION" id="label_parametro_version"
+									style="display:none"></label>
+								<div class="obligatorio tooltip2" id="obligatorio_parametro_version"
+									style="display:none">*
+									<span class="tooltiptext2 campoObligatorio CAMPO_OBLIGATORIO"></span>
+								</div>
+								<input type="text" disabled maxlength="48" placeholder=""
+									id="input_version_parametro_visible" style="display:none"
+									class="PARAMETRO_VERSION form-control" onblur="" />
+								<!--VERSION OCULTO-->
+								<input type="hidden" name="version" id="input_version_parametro" />
+								<div id="errorFormatoVersion" style="display:none"></div>
+							</div>
+						</div>
+
+					</div>
+					<!--BOTON ACCION-->
+					<div class="row">
+						<div class="col-12">
+							<button type="submit" name="btnAcciones" value="" class="tooltip6 border border-dark mb-1"
+								id="btnAcciones">
+								<img class="" src="" alt="" id="iconoAcciones" />
+								<span class="tooltiptext" id="spanAcciones"></span>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- MODAL DELETE -->
+	<div class="modal fade" id="myModalDel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title ELIMINAR_PARAMETRO" id="myModalLabel"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p class="CONFIRMAR_ELIMINAR"></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary ICONO_CERRAR" data-dismiss="modal"></button>
+					<button type="button" id="btnDelete" class="btn btn-primary ELIMINAR_PARAMETRO"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL VER PERFIL-->
+	<div class="modal modal3 fade" id="viewProfile-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog"></div>
+	</div>
+
+	<!--MODAL CAMBIO CONTRASEÑA-->
+	<div class="modal modal3 fade" id="changePass-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+	</div>
+
+	<!--MODAL ALERTAS-->
+	<div id="modal" tabindex="-1" role="dialog" style="display:none">
+		<div class="modal-dialog" role="document" id="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<img src="" name="aviso" class="imagenAviso" />
+					<h3 id="modal-title" class="modal-title"></h3>
+				</div>
+				<div id='modal-mensaje' class="modal-body"></div>
+				<div class="modal-footer">
+					<a id="close" href="#" onclick="closeModal('modal'); loadParameterData();" class="tooltip5">
+						<img class="closeIcon" alt="Cerrar" src="Resources/close.png" />
+						<span class="tooltiptext5 ICONO_CERRAR"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div id="footer"></div>
+</body>

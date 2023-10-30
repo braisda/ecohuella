@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Expires" content="0">
+	<meta http-equiv="Last-Modified" content="0">
+	<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Scripts -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/menu.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/index.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/common.css" media="screen" />
+
+	<script src="js/jquery-3.6.0.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+
+	<!--PDF-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+
+	<script type="text/javascript" src="js/constants.js"></script>
+	<script type="text/javascript" src="js/commonFunctions.js"></script>
+	<script type="text/javascript" src="js/formFunctions.js"></script>
+	<script type="text/javascript" src="js/validations.js"></script>
+	<script type="text/javascript" src="js/lang.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/historyManagement.js"></script>
+	<script type="text/javascript" src="js/pagination.js"></script>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="Locale/Lang_EN.js"></script>
+	<script type="text/javascript" src="Locale/Lang_ES.js"></script>
+	<script type="text/javascript" src="Locale/Lang_GA.js"></script>
+</head>
+
+<body onload="
+(async ()=>{
+    await userRole();
+	checkPermissions();
+	loadLang(); 
+	includeFooter(); 
+	includeBreadCrumb('historyManagement');
+	//await loadProcessUserExecutionParameterData();
+	await loadProcessUserExecutionData();
+	await userNotifications();
+	filterButton();
+	setLang('');
+})();">
+	<!--MENU-->
+	<div id="topMenu"></div>
+
+	<!--BREADCRUMB-->
+	<nav id="breadcrumb" aria-label="breadcrumb"></nav>
+
+	<!--TITULO-->
+	<h1 id="pageTitle" class="gestion bg-dark HISTORIAL_PROCESOS"></h1>
+
+	<!--SUBTITULO-->
+	<h3 id="pageSubtitle" class="gestion m-3 p-1 bg-dark">
+		<span class="TOTAL_HUELLA"></span>
+		<span id="calculoHuellaTotal" class="font-weight-bold">0</span>
+		<span>Kg CO2</span>
+		<button class="btn btn-secondary EXPORTAR_ACTUAL" onclick="exportLastVersion()"></button>
+		<button class="btn btn-secondary EXPORTAR_SELECCIONADA" onclick="openExportSelectedVersion()"></button>
+	</h3>
+
+	<!--BOTON FILTRAR-->
+	<div id="btnFilter" class="text-center"></div>
+
+	<!--BUSCADOR-->
+	<div id="buscador" class="text-center w-50 m-auto" style="display:none">
+		<div>
+			<input type="text" id="bnombre" class="mt-1 form-control NOMBRE" style="display:none"
+				onkeyup="filtrar()">
+		</div>
+		<div>
+			<input type="text" id="bdescripcion" class="mt-1 form-control DESCRIPCION" style="display:none"
+				onkeyup="filtrar()">
+		</div>
+	</div>
+
+	<!--CONTENIDO PRINCIPAL-->
+	<div id="contenidoPrincipalInicio" class="contenidoPrincipalInicio pb-3">
+		<div id="executedCards" class="row d-flex justify-content-center"> </div>
+	</div>
+
+	<!--CONTADOR-->
+	<div class="filasTabla">
+		<div id="contadorPaginas"></div>
+	</div>
+
+	<!--PAGINADOR-->
+	<div class="paginacion" id="paginacion"></div>
+
+	<!--MODAL MODIFICAR CALCULO PROCESO-->
+	<div class="modal fade" id="formularioAcciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog" id="contenidoForm">
+			<div class="formularioAcciones-container p-2">
+				<h1 id="tituloCalculoProceso" class="mt-3"></h1>
+				<form name="formularioGenerico" id="formularioGenerico" onsubmit="">
+					<div id="datosProcesos" class="container py-3 tab-pane active overflow-auto"></div>
+					<div class="row">
+						<div class="col-12">
+							<button type="submit" name="btnAcciones" class="tooltip6 mb-3 border border-dark"
+								id="btnAcciones">
+								<img class="iconoRegistrar" src="Resources/calcular.png" alt="" id="iconoAcciones" />
+								<span class="CALCULAR tooltiptext" id="spanAcciones"></span>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- MODAL CONFIRMAR ELIMINAR CALCULO -->
+	<div class="modal fade" id="myModalConfirmDeleteProcess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title ELIMINAR_CALCULO" id="myModalLabel"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p class="CONFIRMAR_ELIMINAR_CALCULO"></p>
+				</div>
+				<div id="divConfirmDeleteProcess" class="modal-footer">
+					<button type="button" class="btn btn-secondary ICONO_CERRAR" data-dismiss="modal"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL CALCULO PERSONALIZADO-->
+	<div class="modal fade" id="formularioSeleccionProcesos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog" id="contenidoForm" style="max-width:1000px">
+			<div class="formularioSeleccionProcesos-container">
+				<h1 class="SELECCION_PROCEOS_CALCULADOS mt-3"></h1>
+				<div class="container my-3 p-1 tab-pane active overflow-auto">
+					<div id="listadoProcesos" class="row">
+					</div>
+				</div>
+
+				<!--BOTON ACCION-->
+				<div class="row">
+					<div class="col-12">
+						<button class="btnSubmit" onclick="exportSelectedVersion()" name="btnAcciones" value=""
+							class="tooltip6 border border-dark" id="btnAcciones">
+							<img class="iconoRegistrar" src="Resources/calcular.png" alt="" id="iconoAcciones" />
+							<span class="CALCULAR tooltiptext" id="spanAcciones"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL VER PERFIL-->
+	<div class="modal modal3 fade" id="viewProfile-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog"></div>
+	</div>
+
+	<!--MODAL CAMBIO CONTRASEÑA-->
+	<div class="modal modal3 fade" id="changePass-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+	</div>
+
+	<!--MODAL ALERTAS-->
+	<div id="modal" tabindex="-1" role="dialog" style="display:none">
+		<div class="modal-dialog" role="document" id="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<img src="" name="aviso" class="imagenAviso" />
+					<h3 id="modal-title" class="modal-title"></h3>
+				</div>
+				<div id='modal-mensaje' class="modal-body"></div>
+				<div class="modal-footer">
+					<a id="close" href="#" onclick="closeModal('modal'); loadProcessUserExecutionData();"
+						class="tooltip5">
+						<img class="closeIcon" alt="Cerrar" src="Resources/close.png" />
+						<span class="tooltiptext5 ICONO_CERRAR"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div id="footer"></div>
+</body>

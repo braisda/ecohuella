@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Expires" content="0">
+	<meta http-equiv="Last-Modified" content="0">
+	<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Scripts -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/menu.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/index.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/common.css" media="screen" />
+
+	<script src="js/jquery-3.6.0.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="js/constants.js"></script>
+	<script type="text/javascript" src="js/commonFunctions.js"></script>
+	<script type="text/javascript" src="js/formFunctions.js"></script>
+	<script type="text/javascript" src="js/validations.js"></script>
+	<script type="text/javascript" src="js/lang.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/notificationManagement.js"></script>
+	<script type="text/javascript" src="js/pagination.js"></script>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="Locale/Lang_EN.js"></script>
+	<script type="text/javascript" src="Locale/Lang_ES.js"></script>
+	<script type="text/javascript" src="Locale/Lang_GA.js"></script>
+</head>
+
+<body onload="
+(async ()=>{
+    await userRole();
+	//checkPermissions();
+	loadLang(); 
+	includeFooter(); 
+	includeBreadCrumb('notificationManagement');
+    await loadNotificationData();
+	await userNotifications();
+	addButton();
+	setLang('');
+})();">
+	<!--MENU-->
+	<div id="topMenu"></div>
+
+	<!--BREADCRUMB-->
+	<nav id="breadcrumb" aria-label="breadcrumb"></nav>
+
+	<!--TITULO-->
+	<h1 class="gestion bg-dark GESTION_NOTIFICACIONES"></h1>
+
+	<!--TABLA-->
+	<div id="tablaDatos" class="mt-3">
+		<!--BOTON FILTRAR-->
+		<div id="btnAdd"></div>
+
+		<!--TABLA-->
+		<div>
+			<table class="table table-bordered text-center" id="tablaNotificaciones">
+				<thead class="headerGestionNotificaciones">
+					<!--LEIDA-->
+					<th scope="col">
+						<div class="leidaNotificacionColumn LEIDA"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(0, 'tablaNotificaciones')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bleida" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--TITULO-->
+					<th scope="col">
+						<div class="tituloNotificacionColumn TITULO"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(1, 'tablaNotificaciones')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="btitulo" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--FECHA-->
+					<th scope="col">
+						<div class="fechaNotificacionColumn FECHA"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(2, 'tablaNotificaciones')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bfecha" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--REMITENTE-->
+					<th scope="col">
+						<div class="remitenteNotificacionColumn REMITENTE"></div>
+						<div name="btnOrdenar" value="Ordenar" onclick="sortTable(3, 'tablaNotificaciones')"
+							class="tooltip7">
+							<img class="iconoOrdenar" src="Resources/ordenacion.png" alt="Ordenar" />
+							<span class="tooltiptext ORDENAR"></span>
+						</div>
+						<div>
+							<input type="text" id="bremitente" class="mt-1 form-control" style="display:none"
+								onkeyup="filtrar()">
+						</div>
+					</th>
+					<!--ACCIONES-->
+					<th scope="col" class="ACCIONES">
+						<div class="ACCIONES"></div>
+					</th>
+				</thead>
+				<tbody id="datosEntidades" class="bodyGestionNotificacions">
+			</table>
+			<div class="filasTabla">
+				<div id="contadorPaginas"></div>
+			</div>
+
+			<div class="paginacion" id="paginacion">
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL ACCIONES-->
+	<div class="modal fade" id="formularioAcciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog modal-lg" id="contenidoForm">
+			<div class="formularioAcciones-container pb-3">
+				<h1 class="TITULO_MODAL mt-3"></h1>
+				<form name="formularioGenerico" id="formularioGenerico" action="" onsubmit="">
+					<div id="datosPersonales" class="mx-3 tab-pane active overflow-auto">
+						<!--ID-->
+						<div class="form-group">
+							<!--ID OCULTO-->
+							<input type="hidden" name="id_notificacion" id="input_id_notificacion" />
+						</div>
+						<div class="row">
+							<!--TITULO-->
+							<div class="form-group col-12">
+								<label class="NOTIFICACION_TITULO" id="label_notificacion_titulo"
+									style="display:none"></label>
+								<input type="text" maxlength="48" placeholder="" name="titulo"
+									id="input_titulo_notificacion" style="display:none"
+									class="NOTIFICACION_TITULO form-control" onblur="" />
+							</div>
+						</div>
+						<div class="row">
+							<!--CUERPO-->
+							<div class="form-group col-12">
+								<label class="NOTIFICACION_CUERPO" id="label_notificacion_cuerpo"
+									style="display:none"></label>
+								<textarea maxlength="1048" placeholder="" name="cuerpo" id="input_cuerpo_notificacion"
+									rows="10" style="display:none" class="NOTIFICACION_CUERPO form-control"
+									onblur=""></textarea>
+							</div>
+						</div>
+						<div class="row">
+							<!--FECHA-->
+							<div class="form-group col-md-3 col-sm-12">
+								<label class="NOTIFICACION_FECHA" id="label_notificacion_fecha"
+									style="display:none"></label>
+								<input type="date" min="1900-01-01" max="3000-01-01" placeholder="" name="fecha"
+									id="input_fecha_notificacion" style="display:none"
+									class="NOTIFICACION_FECHA form-control" onblur="" />
+							</div>
+							<!--LEIDA-->
+							<div class="form-group">
+								<!--LEIDA OCULTO-->
+								<input type="hidden" name="leida" id="input_leida_notificacion" />
+							</div>
+							<!--REMITENTE-->
+							<div class="form-group col-md-9 col-sm-12">
+								<label class="NOTIFICACION_REMITENTE" id="label_notificacion_remitente"
+									style="display:none"></label>
+								<input type="text" disabled maxlength="48" placeholder="" name="dni_usuario_remitente"
+									id="input_remitente_notificacion" style="display:none"
+									class="NOTIFICACION_REMITENTE form-control" onblur="" />
+							</div>
+						</div>
+					</div>
+
+					<!--BOTON ACCION-->
+					<div class="row">
+						<div class="col-12">
+							<button type="submit" name="btnAcciones" value="" class="row tooltip6 border border-dark"
+								id="btnAcciones">
+								<img class="" src="" alt="" id="iconoAcciones" />
+								<span class="tooltiptext" id="spanAcciones"></span>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- MODAL DELETE -->
+	<div class="modal fade" id="myModalDel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title ELIMINAR_NOTIFICACION" id="myModalLabel"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p class="CONFIRMAR_ELIMINAR"></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary ICONO_CERRAR" data-dismiss="modal"></button>
+					<button type="button" id="btnDelete" class="btn btn-primary ELIMINAR_NOTIFICACION"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--MODAL VER PERFIL-->
+	<div class="modal modal3 fade" id="viewProfile-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+		<div class="modal-dialog"></div>
+	</div>
+
+	<!--MODAL CAMBIO CONTRASEÑA-->
+	<div class="modal modal3 fade" id="changePass-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true" style="display: none;">
+	</div>
+
+	<!--MODAL ALERTAS-->
+	<div id="modal" tabindex="-1" role="dialog" style="display:none">
+		<div class="modal-dialog" role="document" id="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<img src="" name="aviso" class="imagenAviso" />
+					<h3 id="modal-title" class="modal-title"></h3>
+				</div>
+				<div id='modal-mensaje' class="modal-body"></div>
+				<div class="modal-footer">
+					<a id="close" href="#" onclick="closeModal('modal'); loadNotificationData();" class="tooltip5">
+						<img class="closeIcon" alt="Cerrar" src="Resources/close.png" />
+						<span class="tooltiptext5 ICONO_CERRAR"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="footer"></div>
+</body>
