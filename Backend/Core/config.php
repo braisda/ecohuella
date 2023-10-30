@@ -6,9 +6,9 @@
 	define ('directorioLog','/log');
 	define ('log_name','log.txt');
 	define ('BDTEST', 'carbonoTest');
-	/*define ('urlRest', 'http://localhost/Backend/index.php');
-	define ('URL_REST', 'http://localhost/Backend/index.php');
-	define ('URL_TEST', 'http://localhost/Backend/indexTest.php');*/
+	/*define ('urlRest', 'http://localhost/ecohuella/Backend/index.php');
+	define ('URL_REST', 'http://localhost/ecohuella/Backend/index.php');
+	define ('URL_TEST', 'http://localhost/ecohuella/Backend/indexTest.php');*/
 	define ('urlRest', 'http://192.168.1.50/Backend/index.php');
 	define ('URL_REST', 'http://192.168.1.50/Backend/index.php');
 	define ('URL_TEST', 'http://192.168.1.50/Backend/indexTest.php');
