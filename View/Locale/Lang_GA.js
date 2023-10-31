@@ -333,6 +333,7 @@ arrayGA = {
     PROCESO_FECHA_MODIFICACION: "Data modificación",
     PROCESO_FORMULA: "Fórmula proceso",
     PROCESO_MODIFICADOR: "Modificador proceso",
+    PROCESO_NO_ES_ULTIMA_VERSION: "A versión do proceso non é a última",
     PROCESO_NO_EXISTE: "O proceso non existe",
     PROCESO_NOMBRE: "Nome proceso",
     PROCESO_USUARIO_EJECUCION_EN_USO: "O proceso xa foi calculado e non se pode borrar",

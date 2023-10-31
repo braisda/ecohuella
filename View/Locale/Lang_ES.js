@@ -333,6 +333,7 @@ arrayES = {
     PROCESO_FECHA_MODIFICACION: "Fecha modificación",
     PROCESO_FORMULA: "Fórmula proceso",
     PROCESO_MODIFICADOR: "Modificador proceso",
+    PROCESO_NO_ES_ULTIMA_VERSION: "La versión del proceso no es la última",
     PROCESO_NO_EXISTE: "El proceso no existe",
     PROCESO_NOMBRE: "Nombre proceso",
     PROCESO_USUARIO_EJECUCION_EN_USO: "El proceso ya se ha calculado y no se puede borrar",

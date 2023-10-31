@@ -332,6 +332,7 @@ arrayEN = {
     PROCESO_FECHA_MODIFICACION: "Modification date",
     PROCESO_FORMULA: "Process formula",
     PROCESO_MODIFICADOR: "Process modificator",
+    PROCESO_NO_ES_ULTIMA_VERSION: "Process version is not last",
     PROCESO_NO_EXISTE: "Process does not exist",
     PROCESO_NOMBRE: "Process name",
     PROCESO_USUARIO_EJECUCION_EN_USO: "The process has already been calculated and must not be deleted",

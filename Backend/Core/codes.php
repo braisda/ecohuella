@@ -118,6 +118,7 @@
 	define('CATEGORIA_DUPLICADA', 'No puede haber dos categorias con el mismo nombre');
 
 	define('PROCESO_YA_EXISTE', 'Ya existe el proceso en el sistema');
+	define('PROCESO_NO_ES_ULTIMA_VERSION', 'La versión del proceso no es la última');
 	define('PROCESO_ESTA_EN_USO', 'El proceso está en uso por algún usuario y no se puede borrar');
 	define('ACTIVO_VACIO', 'Activo no puede ser vacío');
 	define('ACTIVO_ERROR_FORMATO', 'El formato del activo es incorrecto');
