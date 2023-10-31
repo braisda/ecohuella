@@ -55,7 +55,6 @@ async function loadCalculatedProcessData() {
             calculatedProcesses = res;
 
             calculatedProcesses = groupCalculatedProcesses(res);
-            console.log("calculatedProcesses: ", calculatedProcesses);
             //TODO CALCULAR HUELLA DE CARBONO TOTAL
             calculateTotalFootPrint();
         })
@@ -111,13 +110,20 @@ function groupCalculatedProcesses(res) {
         groupedProcess = {};
     });
 
+
+
     groupedProcesses.forEach(function (gp) {
         idProcess = Object.keys(gp)[0];
         versions = [];
         calculatedProcesses.resource.forEach(function (p) {
             if (idProcess == p.id_proceso.id_proceso) {
                 if (gp[idProcess].length == 0) {
-                    versionProcess[p.version.id_proceso] = [];
+                    if(p.version.id_proceso == null){
+                        ver = p.version;
+                    } else {
+                        ver = p.version.id_proceso;
+                    }
+                    versionProcess[ver] = [];
                     gp[idProcess].push(versionProcess);
                     versionProcess = {};
                 } else if (gp[idProcess].length > 0) {
@@ -139,7 +145,12 @@ function groupCalculatedProcesses(res) {
         gp[idProcess].forEach(function (g) {
             version = Object.keys(g)[0];
             calculatedProcesses.resource.forEach(function (p) {
-                if (idProcess == p.id_proceso.id_proceso && version == p.version.id_proceso) {
+                if(p.version.id_proceso == null){
+                    ver = p.version;
+                } else {
+                    ver = p.version.id_proceso;
+                }
+                if (idProcess == p.id_proceso.id_proceso && version == ver) {
                     g[version].push(p);
                 }
             });
@@ -176,11 +187,15 @@ async function loadProcessData() {
 
     await ajaxPromise(document.formProcessManagement, "search", "process", ["RECORDSET_DATOS", "RECORDSET_VACIO"], true)
         .then((res) => {
-
             aux = [];
             processUserExecutions.resource.forEach(function (p) {
                 res.resource.forEach(function (r) {
-                    if (r.id_proceso == p.id_proceso.id_proceso && r.version == p.version.id_proceso && p.dni_usuario_ejecucion.dni == getCookie("userSystem")) {
+                    if(p.version.id_proceso == null){
+                        ver = p.version;
+                    } else {
+                        ver = p.version.id_proceso;
+                    }
+                    if (r.id_proceso == p.id_proceso.id_proceso && r.version == ver && p.dni_usuario_ejecucion.dni == getCookie("userSystem")) {
                         aux.push(r);
                     }
                 });
@@ -192,10 +207,9 @@ async function loadProcessData() {
             if (aux.length == 0 || aux.length == '0') {
                 res.code = "RECORDSET_VACIO";
             }
-            console.log("res: ", res);
+            
             loadCalculatedProcessData();
             //TODO --> CALCULAR AQUI TODOS LOS PROCESOS Y METERLOS EN UN ARRAY
-
             executedProcesses = groupProcesses(res);
             empty = document.createElement("p");
             empty.id = "idVacio";
@@ -370,7 +384,6 @@ async function loadProcessUserExecutionParameterData(row, isLastVersion) {
 
                 params.forEach(function (p, idx, array) {
                     formula = formula.replaceAll("#_" + p.id_param + "_#", p.valor_param);
-                    console.log("formula---->", formula);
                     if (idx === array.length - 1) {
 
                         result = eval(formula);
@@ -696,7 +709,6 @@ function getIndividualFootPrint(idP, v, formula) {
                     if (params) {
                         params.forEach(function (p) {
                             formula = formula.replaceAll("#_" + p.id_parametro.id_parametro + "_#", p.valor_parametro);
-                            console.log("formula++++> ", formula);
                         });
                         footPrint = eval(formula);
                     }
@@ -737,7 +749,6 @@ function exportLastVersion() {
         lineHeight = 81;
         executedProcesses.resource.forEach(function (process) {
             process[Object.keys(process)[0]].forEach(function (p, idx, array) {
-                console.log("p ", p);
                 if (idx === array.length - 1) {
                     if (lineHeight < 266) {
                         lineHeight = lineHeight + 5
@@ -746,7 +757,6 @@ function exportLastVersion() {
                         doc.text(30, lineHeight, "- Versión: " + p.version);
                         lineHeight = lineHeight + 5
                         calculo = getIndividualFootPrint(p.id_proceso, p.version, p.formula);
-                        console.log("calculo-------------->", calculo);
                         if (calculo == "-") {
                             descargar = false;
                         }
@@ -836,14 +846,12 @@ function exportSelectedVersion() {
 
     for (let select of selects) {
         obj = {};
-        console.log(select.id.length);
         id = select.id.substring(15, select.id.length);
         value = select.value;
         obj["proceso"] = id;
         obj["version"] = value;
         customSelection.push(obj);
     }
-    console.log("customSelection: ", customSelection);
 
     var descargar = true;
     var total = 0;
@@ -876,16 +884,13 @@ function exportSelectedVersion() {
             process[Object.keys(process)[0]].forEach(function (p) {
                 customSelection.forEach(function (cs) {
                     if ((cs.version != "") && (p.id_proceso == cs.proceso && p.version == cs.version)) {
-                        //console.log(cs.version, " --------------- ", p.version, " ||");
                         if (lineHeight < 266) {
                             lineHeight = lineHeight + 5
                             doc.text(20, lineHeight, "+ Nombre proceso: " + p.nombre);
                             lineHeight = lineHeight + 5
                             doc.text(30, lineHeight, "- Versión: " + p.version);
                             lineHeight = lineHeight + 5
-                            //console.log("datos->, ", p.id_proceso, " - ", p.version, " - ", p.formula);
                             calculo = getIndividualFootPrint(p.id_proceso, p.version, p.formula);
-                            console.log("calculo: ", calculo);
                             if (calculo == "-") {
                                 descargar = false;
                             }
