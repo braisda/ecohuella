@@ -64,6 +64,11 @@ class ModelBase
 		return $this->mapping->seek($this->table, $datosQuery, $valuesQuery);
 	}
 
+	function seek_multiple($datosQuery, $valuesQuery)
+	{
+		return $this->mapping->seek_multiple($this->table, $datosQuery, $valuesQuery);
+	}
+
 	function SEARCH()
 	{
 		$result = $this->mapping->SEARCH_GENERICO($this->table, $this->arrayDataValue, $this->foraneas, $this->start, $this->pageRaw, $this->orden, $this->tipoOrden, $this->id);

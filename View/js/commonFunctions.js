@@ -174,6 +174,7 @@ function closeModal(idElement) {
   document.getElementById(idElement).style.display = "none";
 
   modalType = document.getElementById("modal-mensaje").textContent;
+
   if (modalType == "Contraseña cambiada correctamente" || modalType == "Password changed successfully" || modalType == "Contrasinal cambiada correctamente" || modalType == "Sesión caducada") {
     logout();
     window.location.href = './index.html';
@@ -186,6 +187,12 @@ function closeModal(idElemento, accion, operacion) {
   var metodoEjecutar = operacion;
 
   document.getElementById(idElemento).style.display = "none";
+
+  modalType = document.getElementById("modal-mensaje").textContent;
+  if (modalType == "Contraseña cambiada correctamente" || modalType == "Password changed successfully" || modalType == "Contrasinal cambiada correctamente" || modalType == "Sesión caducada") {
+    logout();
+    window.location.href = './index.html';
+  }
 
   if (accion != "" && accion != undefined) {
     window.location.href = accion;
