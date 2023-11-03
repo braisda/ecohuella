@@ -28,7 +28,7 @@ function logAttributeException($feedback){
     
     $log = new logAttributeExceptionModel();
     date_default_timezone_set('Europe/Madrid');
-    if(action == 'login') {
+    if(action == 'login' || action == 'register') {
         define('userSystem', 'DESCONOCIDO');
     }
 
